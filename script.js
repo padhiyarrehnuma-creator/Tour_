@@ -4688,3 +4688,55 @@ window.confirmBooking = confirmBooking;
 window.closeBookingSuccess = closeBookingSuccess;
 window.closeBookingSuccessAndGoProfile = closeBookingSuccessAndGoProfile;
 window.downloadInvoice = downloadInvoice;
+
+(function setupSidebarClose() {
+    function initSidebarClose() {
+        const closeBtn = document.getElementById('sidebarCloseBtn');
+        const navToggle = document.getElementById('navToggle');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        if (closeBtn && navToggle) {
+            // Close button click → sidebar band karo
+            closeBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                navToggle.checked = false;
+            });
+
+            // Koi bhi nav link click → sidebar auto close
+            navLinks.forEach(link => {
+                link.addEventListener('click', function () {
+                    navToggle.checked = false;
+                });
+            });
+
+            // ESC key → sidebar close
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && navToggle.checked) {
+                    navToggle.checked = false;
+                }
+            });
+
+            // Overlay (sidebar ke bahar) click → close
+            document.addEventListener('click', function (e) {
+                if (!navToggle.checked) return;
+                const navLinksEl = document.querySelector('.nav-links');
+                const label = document.querySelector('.nav-toggle-label');
+                if (
+                    navLinksEl &&
+                    !navLinksEl.contains(e.target) &&
+                    label &&
+                    !label.contains(e.target)
+                ) {
+                    navToggle.checked = false;
+                }
+            });
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSidebarClose, { once: true });
+    } else {
+        initSidebarClose();
+    }
+})();
